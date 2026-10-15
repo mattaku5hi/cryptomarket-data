@@ -1,0 +1,40 @@
+{
+  "format": "market-data-extraction-provenance-v1",
+  "recorded_at": "2026-10-15T12:53:32.501892+00:00",
+  "source_project": "polyazimuth-btc",
+  "source_commit": "6549c1bec63a8a6212a5021e501b10491da81ea9",
+  "source_files": [
+    {
+      "source": "crates/pm-binance/src/lib.rs",
+      "sha256": "387582dff28fda24b6161320257258c14c124e3e267cd841d6b2cebfc03700ee"
+    },
+    {
+      "source": "crates/pm-schema/src/json.rs",
+      "sha256": "3e97c6d0bb10b93e2fc852ce516d1133ddf14ef35d50c48ae83fb7282f16876f"
+    },
+    {
+      "source": "crates/pm-schema/src/lib.rs",
+      "sha256": "41bd5f65a37b676c60a37cae1d233e7afaeb98e9412d232d6f9157f4e7e98f48"
+    },
+    {
+      "source": "crates/pm-features/src/candles.rs",
+      "sha256": "771af519a69bb6c91fe347e63d523a01d34bef6e2d37d53e82708aad29890906"
+    },
+    {
+      "source": "crates/pm-features/src/vwap.rs",
+      "sha256": "78678972072d97d5806201f811afa82511f7cad55375353d8aad46cb13e1e093"
+    }
+  ],
+  "changes": [
+    "symbol-bound Spot/USD-M parser",
+    "preserved exact lexical decimals and duplicate-key JSON validation",
+    "fixed positive UTC candle seconds",
+    "caller-bound instrument identity checked on each trade",
+    "caller-selected volume convention and clock annotations"
+  ],
+  "compatibility_admission": "compiler-only;behavioral controls pending",
+  "copied_tests": false,
+  "private_archives_credentials_paths_copied": false,
+  "transport_and_rest_klines_implemented": false,
+  "public_remote_created": false
+}
