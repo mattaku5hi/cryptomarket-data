@@ -1,0 +1,220 @@
+{
+  "format": "synthetic-predictor-health-reference-v1",
+  "provenance": {
+    "synthetic_metadata_only": true,
+    "no_source_or_clock_qualification": true,
+    "no_forecast_or_execution_eligibility_claim": true,
+    "health_and_source_statuses_are_caller_annotations": true
+  },
+  "wire_format": "predictor-health-record-v1",
+  "cases": [
+    {
+      "name": "startup_unknown",
+      "record": {
+        "format": "predictor-health-record-v1",
+        "status": "Unknown",
+        "reported_at": "2026-10-11T12:34:56.123456789Z",
+        "valid_until": "2026-10-11T12:34:56.123456799Z",
+        "last_forecast_at": null,
+        "required_sources": [
+          {
+            "source_id": "binance-spot",
+            "status": "Unknown",
+            "age": null
+          }
+        ],
+        "model_versions": [],
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "startup",
+            "synthetic-only"
+          ]
+        }
+      },
+      "compact_json_hex": "7b22666f726d6174223a22707265646963746f722d6865616c74682d7265636f72642d7631222c22737461747573223a22556e6b6e6f776e222c227265706f727465645f6174223a22323032362d31302d31315431323a33343a35362e3132333435363738395a222c2276616c69645f756e74696c223a22323032362d31302d31315431323a33343a35362e3132333435363739395a222c226c6173745f666f7265636173745f6174223a6e756c6c2c2272657175697265645f736f7572636573223a5b7b22736f757263655f6964223a2262696e616e63652d73706f74222c22737461747573223a22556e6b6e6f776e222c22616765223a6e756c6c7d5d2c226d6f64656c5f76657273696f6e73223a5b5d2c22646174615f7175616c697479223a7b22636c6f636b5f737461747573223a22556e6b6e6f776e222c22666c616773223a5b2273746172747570222c2273796e7468657469632d6f6e6c79225d7d7d",
+      "freshness": [
+        {
+          "now": "2026-10-11T12:34:56.123456788Z",
+          "expected": "Future"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456789Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456790Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456798Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456799Z",
+          "expected": "Expired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456800Z",
+          "expected": "Expired"
+        }
+      ]
+    },
+    {
+      "name": "ordered_sources_and_models",
+      "record": {
+        "format": "predictor-health-record-v1",
+        "status": "Healthy",
+        "reported_at": "2026-10-11T12:34:56.123456789Z",
+        "valid_until": "2026-10-11T12:34:56.123456799Z",
+        "last_forecast_at": "2026-10-11T12:34:56.123456769Z",
+        "required_sources": [
+          {
+            "source_id": "binance-spot",
+            "status": "Healthy",
+            "age": {
+              "monotonic_origin_id": "pass-17-spot",
+              "elapsed_ns": 0
+            }
+          },
+          {
+            "source_id": "binance-usdm",
+            "status": "Unhealthy",
+            "age": null
+          }
+        ],
+        "model_versions": [
+          "toy-residual-v2",
+          "toy-independent-v1"
+        ],
+        "data_quality": {
+          "clock_status": "Uncertain",
+          "flags": [
+            "caller-annotation",
+            "synthetic-only"
+          ]
+        }
+      },
+      "compact_json_hex": "7b22666f726d6174223a22707265646963746f722d6865616c74682d7265636f72642d7631222c22737461747573223a224865616c746879222c227265706f727465645f6174223a22323032362d31302d31315431323a33343a35362e3132333435363738395a222c2276616c69645f756e74696c223a22323032362d31302d31315431323a33343a35362e3132333435363739395a222c226c6173745f666f7265636173745f6174223a22323032362d31302d31315431323a33343a35362e3132333435363736395a222c2272657175697265645f736f7572636573223a5b7b22736f757263655f6964223a2262696e616e63652d73706f74222c22737461747573223a224865616c746879222c22616765223a7b226d6f6e6f746f6e69635f6f726967696e5f6964223a22706173732d31372d73706f74222c22656c61707365645f6e73223a307d7d2c7b22736f757263655f6964223a2262696e616e63652d7573646d222c22737461747573223a22556e6865616c746879222c22616765223a6e756c6c7d5d2c226d6f64656c5f76657273696f6e73223a5b22746f792d726573696475616c2d7632222c22746f792d696e646570656e64656e742d7631225d2c22646174615f7175616c697479223a7b22636c6f636b5f737461747573223a22556e6365727461696e222c22666c616773223a5b2263616c6c65722d616e6e6f746174696f6e222c2273796e7468657469632d6f6e6c79225d7d7d",
+      "freshness": [
+        {
+          "now": "2026-10-11T12:34:56.123456788Z",
+          "expected": "Future"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456789Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456790Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456798Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456799Z",
+          "expected": "Expired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456800Z",
+          "expected": "Expired"
+        }
+      ]
+    },
+    {
+      "name": "caller_clock_annotation",
+      "record": {
+        "format": "predictor-health-record-v1",
+        "status": "Unhealthy",
+        "reported_at": "2026-10-11T12:34:56.123456809Z",
+        "valid_until": "2026-10-11T12:34:56.123456829Z",
+        "last_forecast_at": "2026-10-11T12:34:56.123456808Z",
+        "required_sources": [
+          {
+            "source_id": "local-clock",
+            "status": "Healthy",
+            "age": {
+              "monotonic_origin_id": "pass-17-clock",
+              "elapsed_ns": 7
+            }
+          }
+        ],
+        "model_versions": [
+          "caller-order-b",
+          "caller-order-a"
+        ],
+        "data_quality": {
+          "clock_status": {
+            "Healthy": {
+              "offset_nanos": -12,
+              "uncertainty_nanos": 51
+            }
+          },
+          "flags": [
+            "preserved-without-promotion"
+          ]
+        }
+      },
+      "compact_json_hex": "7b22666f726d6174223a22707265646963746f722d6865616c74682d7265636f72642d7631222c22737461747573223a22556e6865616c746879222c227265706f727465645f6174223a22323032362d31302d31315431323a33343a35362e3132333435363830395a222c2276616c69645f756e74696c223a22323032362d31302d31315431323a33343a35362e3132333435363832395a222c226c6173745f666f7265636173745f6174223a22323032362d31302d31315431323a33343a35362e3132333435363830385a222c2272657175697265645f736f7572636573223a5b7b22736f757263655f6964223a226c6f63616c2d636c6f636b222c22737461747573223a224865616c746879222c22616765223a7b226d6f6e6f746f6e69635f6f726967696e5f6964223a22706173732d31372d636c6f636b222c22656c61707365645f6e73223a377d7d5d2c226d6f64656c5f76657273696f6e73223a5b2263616c6c65722d6f726465722d62222c2263616c6c65722d6f726465722d61225d2c22646174615f7175616c697479223a7b22636c6f636b5f737461747573223a7b224865616c746879223a7b226f66667365745f6e616e6f73223a2d31322c22756e6365727461696e74795f6e616e6f73223a35317d7d2c22666c616773223a5b227072657365727665642d776974686f75742d70726f6d6f74696f6e225d7d7d",
+      "freshness": [
+        {
+          "now": "2026-10-11T12:34:56.123456808Z",
+          "expected": "Future"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456809Z",
+          "expected": "DeclaredUnexpired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456829Z",
+          "expected": "Expired"
+        }
+      ]
+    },
+    {
+      "name": "zero_validity",
+      "record": {
+        "format": "predictor-health-record-v1",
+        "status": "Unhealthy",
+        "reported_at": "2026-10-11T12:34:56.123456839Z",
+        "valid_until": "2026-10-11T12:34:56.123456839Z",
+        "last_forecast_at": null,
+        "required_sources": [],
+        "model_versions": [],
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": []
+        }
+      },
+      "compact_json_hex": "7b22666f726d6174223a22707265646963746f722d6865616c74682d7265636f72642d7631222c22737461747573223a22556e6865616c746879222c227265706f727465645f6174223a22323032362d31302d31315431323a33343a35362e3132333435363833395a222c2276616c69645f756e74696c223a22323032362d31302d31315431323a33343a35362e3132333435363833395a222c226c6173745f666f7265636173745f6174223a6e756c6c2c2272657175697265645f736f7572636573223a5b5d2c226d6f64656c5f76657273696f6e73223a5b5d2c22646174615f7175616c697479223a7b22636c6f636b5f737461747573223a22556e6b6e6f776e222c22666c616773223a5b5d7d7d",
+      "freshness": [
+        {
+          "now": "2026-10-11T12:34:56.123456838Z",
+          "expected": "Future"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456839Z",
+          "expected": "Expired"
+        },
+        {
+          "now": "2026-10-11T12:34:56.123456840Z",
+          "expected": "Expired"
+        }
+      ]
+    }
+  ],
+  "missing_heartbeat_freshness": [
+    {
+      "now": "2026-10-11T12:34:56.123456789Z",
+      "expected": "Missing"
+    }
+  ],
+  "semantics": {
+    "freshness_interval": "[reported_at, valid_until)",
+    "declared_unexpired_is_not_health_or_permission": true,
+    "timestamps": "UTC RFC3339 with nine fractional digits; integer nanosecond comparisons",
+    "identity_order": "exact caller order retained; uniqueness does not sort identifiers"
+  }
+}

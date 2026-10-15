@@ -1,0 +1,494 @@
+{
+  "format": "synthetic-forecast-record-reference-v1",
+  "genuine_market_data": false,
+  "source_or_clock_admission": false,
+  "method": "Explicit field order, compact JSON, UTC Z, dyadic binary64 probabilities and canonical positive zero; versioned SHA256 prefix",
+  "cases": [
+    {
+      "name": "in_window",
+      "market": {
+        "market_id": "fixture-FiveMinutes",
+        "condition_id": "0xabababababababababababababababababababababababababababababababab",
+        "up_token_id": "1",
+        "down_token_id": "2",
+        "horizon": "FiveMinutes",
+        "listed_at": "2026-10-10T00:00:00Z",
+        "interval_start": "2026-10-10T00:01:00Z",
+        "interval_end": "2026-10-10T00:06:00Z",
+        "trading_close": "2026-10-10T00:06:00Z",
+        "rule_text": "synthetic forecast fixture rule",
+        "rule_hash": "c192a0a63e04e43976364405193e14305483a2ff4d36d7a1af997e241ebfae82",
+        "resolution_source": "fixture-only",
+        "feed_id": "fixture-only",
+        "window_seconds": 60,
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "first_available_at": "2026-10-10T00:00:10Z"
+      },
+      "input": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-forecast-1",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.75,
+        "p_down": 0.25,
+        "q_market_up": 0.5,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "canonical_record": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-forecast-1",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.75,
+        "p_down": 0.25,
+        "q_market_up": 0.5,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "compact_json": "{\"format\":\"probability-forecast-record-v1\",\"forecast_id\":\"fixture-forecast-1\",\"market_id\":\"fixture-FiveMinutes\",\"horizon\":\"FiveMinutes\",\"market_phase\":\"InWindow\",\"predicted_at\":\"2026-10-10T00:02:00Z\",\"valid_until\":\"2026-10-10T00:02:30Z\",\"available_data_cutoff\":\"2026-10-10T00:01:50Z\",\"reference_age\":{\"monotonic_origin_id\":\"fixture-origin\",\"elapsed_ns\":1},\"p_up\":0.75,\"p_down\":0.25,\"q_market_up\":0.5,\"model_version\":\"synthetic-model-v1\",\"calibration_version\":\"synthetic-calibration-v1\",\"feature_schema_hash\":\"1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1\",\"resolver_version\":\"fixture-resolver-v1\",\"platform_regime_id\":\"fixture-regime-v1\",\"data_quality\":{\"clock_status\":\"Unknown\",\"flags\":[\"fixture_only\"]}}",
+      "content_sha256": "606facc8ac110299a6d9f11eafbd7efd04e33d555423ce942ab314910db8ed64"
+    },
+    {
+      "name": "pre_window",
+      "market": {
+        "market_id": "fixture-FiveMinutes",
+        "condition_id": "0xabababababababababababababababababababababababababababababababab",
+        "up_token_id": "1",
+        "down_token_id": "2",
+        "horizon": "FiveMinutes",
+        "listed_at": "2026-10-10T00:00:00Z",
+        "interval_start": "2026-10-10T00:01:00Z",
+        "interval_end": "2026-10-10T00:06:00Z",
+        "trading_close": "2026-10-10T00:06:00Z",
+        "rule_text": "synthetic forecast fixture rule",
+        "rule_hash": "c192a0a63e04e43976364405193e14305483a2ff4d36d7a1af997e241ebfae82",
+        "resolution_source": "fixture-only",
+        "feed_id": "fixture-only",
+        "window_seconds": 60,
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "first_available_at": "2026-10-10T00:00:10Z"
+      },
+      "input": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-pre",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "PreWindow",
+        "predicted_at": "2026-10-10T00:00:30Z",
+        "valid_until": "2026-10-10T00:00:50Z",
+        "available_data_cutoff": "2026-10-10T00:00:20Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.5,
+        "p_down": 0.5,
+        "q_market_up": null,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "canonical_record": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-pre",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "PreWindow",
+        "predicted_at": "2026-10-10T00:00:30Z",
+        "valid_until": "2026-10-10T00:00:50Z",
+        "available_data_cutoff": "2026-10-10T00:00:20Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.5,
+        "p_down": 0.5,
+        "q_market_up": null,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "compact_json": "{\"format\":\"probability-forecast-record-v1\",\"forecast_id\":\"fixture-pre\",\"market_id\":\"fixture-FiveMinutes\",\"horizon\":\"FiveMinutes\",\"market_phase\":\"PreWindow\",\"predicted_at\":\"2026-10-10T00:00:30Z\",\"valid_until\":\"2026-10-10T00:00:50Z\",\"available_data_cutoff\":\"2026-10-10T00:00:20Z\",\"reference_age\":{\"monotonic_origin_id\":\"fixture-origin\",\"elapsed_ns\":1},\"p_up\":0.5,\"p_down\":0.5,\"q_market_up\":null,\"model_version\":\"synthetic-model-v1\",\"calibration_version\":\"synthetic-calibration-v1\",\"feature_schema_hash\":\"1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1\",\"resolver_version\":\"fixture-resolver-v1\",\"platform_regime_id\":\"fixture-regime-v1\",\"data_quality\":{\"clock_status\":\"Unknown\",\"flags\":[\"fixture_only\"]}}",
+      "content_sha256": "5064a9c7867685b86c155f492527f57feb8bb4d1189aa66a0c1326a8cda0125c"
+    },
+    {
+      "name": "close_instant_record",
+      "market": {
+        "market_id": "fixture-FiveMinutes",
+        "condition_id": "0xabababababababababababababababababababababababababababababababab",
+        "up_token_id": "1",
+        "down_token_id": "2",
+        "horizon": "FiveMinutes",
+        "listed_at": "2026-10-10T00:00:00Z",
+        "interval_start": "2026-10-10T00:01:00Z",
+        "interval_end": "2026-10-10T00:06:00Z",
+        "trading_close": "2026-10-10T00:06:00Z",
+        "rule_text": "synthetic forecast fixture rule",
+        "rule_hash": "c192a0a63e04e43976364405193e14305483a2ff4d36d7a1af997e241ebfae82",
+        "resolution_source": "fixture-only",
+        "feed_id": "fixture-only",
+        "window_seconds": 60,
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "first_available_at": "2026-10-10T00:00:10Z"
+      },
+      "input": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-closed",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "Closed",
+        "predicted_at": "2026-10-10T00:06:00Z",
+        "valid_until": "2026-10-10T00:06:00Z",
+        "available_data_cutoff": "2026-10-10T00:05:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 0
+        },
+        "p_up": 1.0,
+        "p_down": 0.0,
+        "q_market_up": 1.0,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Uncertain",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "canonical_record": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-closed",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "Closed",
+        "predicted_at": "2026-10-10T00:06:00Z",
+        "valid_until": "2026-10-10T00:06:00Z",
+        "available_data_cutoff": "2026-10-10T00:05:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 0
+        },
+        "p_up": 1.0,
+        "p_down": 0.0,
+        "q_market_up": 1.0,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Uncertain",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "compact_json": "{\"format\":\"probability-forecast-record-v1\",\"forecast_id\":\"fixture-closed\",\"market_id\":\"fixture-FiveMinutes\",\"horizon\":\"FiveMinutes\",\"market_phase\":\"Closed\",\"predicted_at\":\"2026-10-10T00:06:00Z\",\"valid_until\":\"2026-10-10T00:06:00Z\",\"available_data_cutoff\":\"2026-10-10T00:05:50Z\",\"reference_age\":{\"monotonic_origin_id\":\"fixture-origin\",\"elapsed_ns\":0},\"p_up\":1.0,\"p_down\":0.0,\"q_market_up\":1.0,\"model_version\":\"synthetic-model-v1\",\"calibration_version\":\"synthetic-calibration-v1\",\"feature_schema_hash\":\"1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1\",\"resolver_version\":\"fixture-resolver-v1\",\"platform_regime_id\":\"fixture-regime-v1\",\"data_quality\":{\"clock_status\":\"Uncertain\",\"flags\":[\"fixture_only\"]}}",
+      "content_sha256": "575f733d0a68a944e27ceba08d015e6854abe30006361516716ef6c9c89b9981"
+    },
+    {
+      "name": "fifteen_minutes_declared_clock",
+      "market": {
+        "market_id": "fixture-FifteenMinutes",
+        "condition_id": "0xabababababababababababababababababababababababababababababababab",
+        "up_token_id": "1",
+        "down_token_id": "2",
+        "horizon": "FifteenMinutes",
+        "listed_at": "2026-10-10T00:00:00Z",
+        "interval_start": "2026-10-10T00:01:00Z",
+        "interval_end": "2026-10-10T00:16:00Z",
+        "trading_close": "2026-10-10T00:16:00Z",
+        "rule_text": "synthetic forecast fixture rule",
+        "rule_hash": "c192a0a63e04e43976364405193e14305483a2ff4d36d7a1af997e241ebfae82",
+        "resolution_source": "fixture-only",
+        "feed_id": "fixture-only",
+        "window_seconds": 60,
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "first_available_at": "2026-10-10T00:00:10Z"
+      },
+      "input": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-15m",
+        "market_id": "fixture-FifteenMinutes",
+        "horizon": "FifteenMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.75,
+        "p_down": 0.25,
+        "q_market_up": 0.5,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": {
+            "Healthy": {
+              "offset_nanos": -7,
+              "uncertainty_nanos": 99
+            }
+          },
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "canonical_record": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-15m",
+        "market_id": "fixture-FifteenMinutes",
+        "horizon": "FifteenMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.75,
+        "p_down": 0.25,
+        "q_market_up": 0.5,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": {
+            "Healthy": {
+              "offset_nanos": -7,
+              "uncertainty_nanos": 99
+            }
+          },
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "compact_json": "{\"format\":\"probability-forecast-record-v1\",\"forecast_id\":\"fixture-15m\",\"market_id\":\"fixture-FifteenMinutes\",\"horizon\":\"FifteenMinutes\",\"market_phase\":\"InWindow\",\"predicted_at\":\"2026-10-10T00:02:00Z\",\"valid_until\":\"2026-10-10T00:02:30Z\",\"available_data_cutoff\":\"2026-10-10T00:01:50Z\",\"reference_age\":{\"monotonic_origin_id\":\"fixture-origin\",\"elapsed_ns\":1},\"p_up\":0.75,\"p_down\":0.25,\"q_market_up\":0.5,\"model_version\":\"synthetic-model-v1\",\"calibration_version\":\"synthetic-calibration-v1\",\"feature_schema_hash\":\"1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1\",\"resolver_version\":\"fixture-resolver-v1\",\"platform_regime_id\":\"fixture-regime-v1\",\"data_quality\":{\"clock_status\":{\"Healthy\":{\"offset_nanos\":-7,\"uncertainty_nanos\":99}},\"flags\":[\"fixture_only\"]}}",
+      "content_sha256": "42ae8cecd8ba93f3c4b2793f7a6f96db1b97564c090ebc1589c198c9d58bd62c"
+    },
+    {
+      "name": "negative_zero",
+      "market": {
+        "market_id": "fixture-FiveMinutes",
+        "condition_id": "0xabababababababababababababababababababababababababababababababab",
+        "up_token_id": "1",
+        "down_token_id": "2",
+        "horizon": "FiveMinutes",
+        "listed_at": "2026-10-10T00:00:00Z",
+        "interval_start": "2026-10-10T00:01:00Z",
+        "interval_end": "2026-10-10T00:06:00Z",
+        "trading_close": "2026-10-10T00:06:00Z",
+        "rule_text": "synthetic forecast fixture rule",
+        "rule_hash": "c192a0a63e04e43976364405193e14305483a2ff4d36d7a1af997e241ebfae82",
+        "resolution_source": "fixture-only",
+        "feed_id": "fixture-only",
+        "window_seconds": 60,
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "first_available_at": "2026-10-10T00:00:10Z"
+      },
+      "input": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-zero",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": -0.0,
+        "p_down": 1.0,
+        "q_market_up": -0.0,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": []
+        }
+      },
+      "canonical_record": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-zero",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.0,
+        "p_down": 1.0,
+        "q_market_up": 0.0,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": []
+        }
+      },
+      "compact_json": "{\"format\":\"probability-forecast-record-v1\",\"forecast_id\":\"fixture-zero\",\"market_id\":\"fixture-FiveMinutes\",\"horizon\":\"FiveMinutes\",\"market_phase\":\"InWindow\",\"predicted_at\":\"2026-10-10T00:02:00Z\",\"valid_until\":\"2026-10-10T00:02:30Z\",\"available_data_cutoff\":\"2026-10-10T00:01:50Z\",\"reference_age\":{\"monotonic_origin_id\":\"fixture-origin\",\"elapsed_ns\":1},\"p_up\":0.0,\"p_down\":1.0,\"q_market_up\":0.0,\"model_version\":\"synthetic-model-v1\",\"calibration_version\":\"synthetic-calibration-v1\",\"feature_schema_hash\":\"1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1\",\"resolver_version\":\"fixture-resolver-v1\",\"platform_regime_id\":\"fixture-regime-v1\",\"data_quality\":{\"clock_status\":\"Unknown\",\"flags\":[]}}",
+      "content_sha256": "d393683e227294f00755631976b46ff7d18f066e2a675e61e02a24cb28cf0d40"
+    },
+    {
+      "name": "same_id_changed_content",
+      "market": {
+        "market_id": "fixture-FiveMinutes",
+        "condition_id": "0xabababababababababababababababababababababababababababababababab",
+        "up_token_id": "1",
+        "down_token_id": "2",
+        "horizon": "FiveMinutes",
+        "listed_at": "2026-10-10T00:00:00Z",
+        "interval_start": "2026-10-10T00:01:00Z",
+        "interval_end": "2026-10-10T00:06:00Z",
+        "trading_close": "2026-10-10T00:06:00Z",
+        "rule_text": "synthetic forecast fixture rule",
+        "rule_hash": "c192a0a63e04e43976364405193e14305483a2ff4d36d7a1af997e241ebfae82",
+        "resolution_source": "fixture-only",
+        "feed_id": "fixture-only",
+        "window_seconds": 60,
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "first_available_at": "2026-10-10T00:00:10Z"
+      },
+      "input": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-forecast-1",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.25,
+        "p_down": 0.75,
+        "q_market_up": 0.5,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "canonical_record": {
+        "format": "probability-forecast-record-v1",
+        "forecast_id": "fixture-forecast-1",
+        "market_id": "fixture-FiveMinutes",
+        "horizon": "FiveMinutes",
+        "market_phase": "InWindow",
+        "predicted_at": "2026-10-10T00:02:00Z",
+        "valid_until": "2026-10-10T00:02:30Z",
+        "available_data_cutoff": "2026-10-10T00:01:50Z",
+        "reference_age": {
+          "monotonic_origin_id": "fixture-origin",
+          "elapsed_ns": 1
+        },
+        "p_up": 0.25,
+        "p_down": 0.75,
+        "q_market_up": 0.5,
+        "model_version": "synthetic-model-v1",
+        "calibration_version": "synthetic-calibration-v1",
+        "feature_schema_hash": "1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1",
+        "resolver_version": "fixture-resolver-v1",
+        "platform_regime_id": "fixture-regime-v1",
+        "data_quality": {
+          "clock_status": "Unknown",
+          "flags": [
+            "fixture_only"
+          ]
+        }
+      },
+      "compact_json": "{\"format\":\"probability-forecast-record-v1\",\"forecast_id\":\"fixture-forecast-1\",\"market_id\":\"fixture-FiveMinutes\",\"horizon\":\"FiveMinutes\",\"market_phase\":\"InWindow\",\"predicted_at\":\"2026-10-10T00:02:00Z\",\"valid_until\":\"2026-10-10T00:02:30Z\",\"available_data_cutoff\":\"2026-10-10T00:01:50Z\",\"reference_age\":{\"monotonic_origin_id\":\"fixture-origin\",\"elapsed_ns\":1},\"p_up\":0.25,\"p_down\":0.75,\"q_market_up\":0.5,\"model_version\":\"synthetic-model-v1\",\"calibration_version\":\"synthetic-calibration-v1\",\"feature_schema_hash\":\"1d84e518f465ff84fc29d62da1eb0467788666c1634b6142cd8ca47939cf65d1\",\"resolver_version\":\"fixture-resolver-v1\",\"platform_regime_id\":\"fixture-regime-v1\",\"data_quality\":{\"clock_status\":\"Unknown\",\"flags\":[\"fixture_only\"]}}",
+      "content_sha256": "49f884cbd85cac4b904c98382f710696c169f7e50c50bb70effe2ebc814a7d6a"
+    }
+  ]
+}

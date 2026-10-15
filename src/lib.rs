@@ -5,3 +5,5 @@ pub mod candles;
 pub mod decimal;
 pub mod json;
 pub mod types;
+
+pub mod feeds;

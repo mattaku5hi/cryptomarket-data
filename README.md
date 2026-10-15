@@ -9,8 +9,14 @@ through local compatibility adapters. Enable `network` for bounded public depth
 reads and aggregate-trade/depth streams with proactive shared process budgets.
 [Transport and finite example](docs/PUBLIC_TRANSPORT.md).
 
-No additional exchange or provider REST kline implementation is claimed.
-Behavioral acceptance and native raw-first transport migration remain pending. Compiler/Clippy/MSRV checks are not behavioral acceptance.
+The additive `feeds` API provides decimal Binance/Bybit minute candles, public
+trades, open interest, funding, liquidation snapshots and instrument metadata.
+Its optional transport returns bounded raw responses before parsing and shares
+request budgets across clients. [Feed contracts](docs/SCANNER_FEEDS.md).
+
+The workspace also includes extracted `pm-schema` and `pm-record` crates for
+checksummed event recording. Existing Binance/trade-candle APIs remain available.
+Scanner orchestration, strategies and notification logic belong to consumers.
 
 Build through `tools/cargo_budget.sh`; target cap 8 GB with cargo-sweep.
 Licensed under [MIT](LICENSE), selected by the owner.
