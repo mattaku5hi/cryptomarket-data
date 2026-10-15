@@ -368,3 +368,173 @@ fn discovered_limit_keeps_shared_usage_and_cooldowns() {
         server.join().unwrap();
     });
 }
+
+#[test]
+fn forbidden_response_stops_both_transports_for_ten_minutes() {
+    run(async {
+        let (url, server) = http_response(
+            "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".into(),
+        );
+        let client = client();
+        assert_eq!(
+            client
+                .get(&url, 1, Duration::from_secs(2))
+                .await
+                .unwrap()
+                .status,
+            403
+        );
+        assert!(
+            matches!(client.get(&url, 1, Duration::from_millis(20)).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(599))
+        );
+        let options = StreamOptions {
+            lifetime: Duration::from_millis(20),
+            ..Default::default()
+        };
+        assert!(
+            matches!(client.connect(&url.replace("http:", "ws:"), &[], options).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(599))
+        );
+        server.join().unwrap();
+    });
+}
+#[test]
+fn successful_http_rate_error_retains_raw_and_stops_requests() {
+    run(async {
+        let body = r#"{"retCode":10006,"retMsg":"Too many visits!","result":{}}"#;
+        let (url, server) = http_response(format!(
+            "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+            body.len()
+        ));
+        let client = client();
+        let response = client.get(&url, 1, Duration::from_secs(2)).await.unwrap();
+        assert_eq!(response.status, 200);
+        assert_eq!(response.raw_body, body.as_bytes());
+        assert!(
+            matches!(client.get(&url, 1, Duration::from_millis(20)).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(59))
+        );
+        server.join().unwrap();
+    });
+}
+#[test]
+fn ban_without_retry_after_waits_three_days() {
+    run(async {
+        let (url, server) = http_response(
+            "HTTP/1.1 418 Banned\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".into(),
+        );
+        let client = client();
+        assert_eq!(
+            client
+                .get(&url, 1, Duration::from_secs(2))
+                .await
+                .unwrap()
+                .status,
+            418
+        );
+        assert!(
+            matches!(client.get(&url, 1, Duration::from_millis(20)).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(259199))
+        );
+        server.join().unwrap();
+    });
+}
+#[test]
+fn rest_throttle_prevents_websocket_reconnect() {
+    run(async {
+        let (url, server) = http_response("HTTP/1.1 429 Slow\r\nRetry-After: 600\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".into());
+        let client = client();
+        assert_eq!(
+            client
+                .get(&url, 1, Duration::from_secs(2))
+                .await
+                .unwrap()
+                .status,
+            429
+        );
+        let options = StreamOptions {
+            lifetime: Duration::from_millis(20),
+            ..Default::default()
+        };
+        assert!(
+            matches!(client.connect(&url.replace("http:", "ws:"), &[], options).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(599))
+        );
+        server.join().unwrap();
+    });
+}
+
+#[test]
+fn throttle_reset_timestamp_extends_body_error_cooldown() {
+    run(async {
+        let body = r#"{"retCode":10006,"retMsg":"Too many visits!"}"#;
+        let reset = chrono::Utc::now().timestamp_millis() + 120_000;
+        let (url, server) = http_response(format!(
+            "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nX-Bapi-Limit-Reset-Timestamp: {reset}\r\nConnection: close\r\n\r\n{body}",
+            body.len()
+        ));
+        let client = client();
+        client.get(&url, 1, Duration::from_secs(2)).await.unwrap();
+        assert!(client.cooldown_remaining().await > Duration::from_secs(119));
+        server.join().unwrap();
+    });
+}
+
+#[test]
+fn restored_cooldown_is_shared_monotonic_and_expires() {
+    run(async {
+        let expiring = client();
+        let client = client();
+        let shared = client.clone();
+        client.defer_for(Duration::from_secs(600)).await;
+        shared.defer_for(Duration::ZERO).await;
+        let (url, server) = http_response(
+            "HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".into(),
+        );
+        assert!(matches!(
+            shared.get(&url, 1, Duration::from_millis(10)).await,
+            Err(NetworkError::BudgetWait { .. })
+        ));
+        // A separate short restored cooldown must expire, not latch permanently.
+        expiring.defer_for(Duration::from_millis(10)).await;
+        expiring.get(&url, 1, Duration::from_secs(2)).await.unwrap();
+        assert!(expiring.cooldown_remaining().await.is_zero());
+        server.join().unwrap();
+        client.defer_for(Duration::from_secs(8 * 86400)).await;
+        shared.defer_for(Duration::from_secs(1)).await;
+        assert!(shared.cooldown_remaining().await > Duration::from_secs(8 * 86400 - 1));
+        assert!(
+            matches!(shared.get(&url, 1, Duration::from_millis(10)).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(8 * 86400 - 1))
+        );
+        client.defer_for(Duration::MAX).await;
+        assert_eq!(shared.cooldown_remaining().await, Duration::MAX);
+        assert!(matches!(
+            shared.get(&url, 1, Duration::from_millis(10)).await,
+            Err(NetworkError::BudgetWait {
+                retry_after: Duration::MAX
+            })
+        ));
+    });
+}
+
+#[test]
+fn websocket_handshake_throttle_blocks_rest_and_returns_effective_delay() {
+    run(async {
+        // The handshake is an HTTP GET; this loopback fixture intentionally refuses it.
+        let (url, server) = http_response(
+            "HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".into(),
+        );
+        let client = client();
+        assert!(
+            matches!(client.connect(&url.replace("http:", "ws:"), &[], StreamOptions::default()).await,
+            Err(NetworkError::Http { status: 403, retry_after: Some(delay) }) if delay > Duration::from_secs(599))
+        );
+        assert!(
+            matches!(client.get(&url, 1, Duration::from_millis(10)).await,
+            Err(NetworkError::BudgetWait { retry_after }) if retry_after > Duration::from_secs(599))
+        );
+        server.join().unwrap();
+    });
+}

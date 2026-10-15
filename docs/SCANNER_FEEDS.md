@@ -27,6 +27,12 @@ apply an 80% threshold; `set_rest_limit` updates it without resetting usage or
 cooldowns. HTTP failures remain raw responses for archival. Check the status
 before parsing; honor `BudgetWait` when reconnecting or retrying.
 
+REST and connection cooldowns propagate in both directions. HTTP 403 pauses for
+at least ten minutes; 418 without Retry-After pauses for three days. Bybit
+`retCode=10006`, including HTTP 200, respects reset/retry headers with a sixty-second
+minimum. `defer_for` restores a caller's durable cooldown; `cooldown_remaining`
+exposes it for persistence. Unrepresentable delays halt instead of shortening.
+
 The transport handles ping/pong and bounded session lifetimes. Consumers own
 subscription acknowledgement checks, reconnects, gap backfill, event archives,
 and data-readiness gates. Shard Bybit subscriptions to fit its 21,000-character

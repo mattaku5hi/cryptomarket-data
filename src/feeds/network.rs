@@ -50,7 +50,7 @@ struct BudgetState {
     entries: VecDeque<Reservation>,
     next_id: u64,
     used: u32,
-    blocked_until: Instant,
+    blocked_until: Option<Instant>,
 }
 /// Rolling local reservations plus observed provider weight. Charges are never refunded.
 /// The usable capacity is 80% of the supplied provider limit; other processes need coordination.
@@ -73,7 +73,7 @@ impl RequestBudget {
                 entries: VecDeque::new(),
                 next_id: 0,
                 used: 0,
-                blocked_until: Instant::now(),
+                blocked_until: Some(Instant::now()),
             }),
         }))
     }
@@ -96,7 +96,11 @@ impl RequestBudget {
                     state.used -= entry.weight;
                 }
             }
-            let mut wake = state.blocked_until;
+            let Some(mut wake) = state.blocked_until else {
+                return Err(NetworkError::BudgetWait {
+                    retry_after: Duration::MAX,
+                });
+            };
             if state.used > state.capacity - weight {
                 if let Some(entry) = state.entries.front() {
                     wake = wake.max(entry.at + self.window);
@@ -162,10 +166,16 @@ impl RequestBudget {
             }
         }
         let mut delay = retry_after(headers);
-        if status == 418 || status == 429 {
+        if status == 403 {
+            delay = Some(delay.unwrap_or_default().max(Duration::from_secs(600)));
+        } else if status == 418 || status == 429 {
             delay = Some(
                 delay
-                    .unwrap_or(Duration::from_secs(if status == 418 { 120 } else { 60 }))
+                    .unwrap_or(Duration::from_secs(if status == 418 {
+                        259_200
+                    } else {
+                        60
+                    }))
                     .max(Duration::from_secs(1)),
             );
         }
@@ -174,20 +184,43 @@ impl RequestBudget {
             header_number(headers, "x-bapi-limit-status"),
         ) {
             if remaining <= limit.div_euclid(5) {
-                let reset_ms = header_number(headers, "x-bapi-limit-reset-timestamp").unwrap_or(0);
-                let now_ms = u64::try_from(Utc::now().timestamp_millis()).unwrap_or(0);
-                let wait = Duration::from_millis(reset_ms.saturating_sub(now_ms))
-                    .max(Duration::from_secs(1));
+                let wait = bybit_reset_delay(headers).max(Duration::from_secs(1));
                 delay = Some(delay.unwrap_or_default().max(wait));
             }
         }
         if let Some(delay) = delay {
-            // Provider-controlled timestamps are bounded before Instant arithmetic.
-            state.blocked_until = state
-                .blocked_until
-                .max(now + delay.min(Duration::from_secs(604800)));
+            extend_cooldown(&mut state, now, delay);
         }
     }
+    async fn defer_for(&self, delay: Duration) {
+        let mut state = self.state.lock().await;
+        extend_cooldown(&mut state, Instant::now(), delay);
+    }
+    async fn cooldown_remaining(&self) -> Duration {
+        self.state
+            .lock()
+            .await
+            .blocked_until
+            .map_or(Duration::MAX, |until| {
+                until.saturating_duration_since(Instant::now())
+            })
+    }
+}
+fn extend_cooldown(state: &mut BudgetState, now: Instant, delay: Duration) {
+    // An unrepresentable provider delay halts rather than shortening its instruction.
+    if let Some(current) = state.blocked_until {
+        state.blocked_until = now.checked_add(delay).map(|until| until.max(current));
+    }
+}
+fn bybit_reset_delay(headers: &HeaderMap) -> Duration {
+    let reset_ms = header_number(headers, "x-bapi-limit-reset-timestamp").unwrap_or(0);
+    let now_ms = u64::try_from(Utc::now().timestamp_millis()).unwrap_or(0);
+    Duration::from_millis(reset_ms.saturating_sub(now_ms))
+}
+#[derive(serde::Deserialize)]
+struct RateControl {
+    #[serde(rename = "retCode")]
+    ret_code: Option<i64>,
 }
 fn header_number(headers: &HeaderMap, name: &str) -> Option<u64> {
     headers.get(name)?.to_str().ok()?.parse().ok()
@@ -246,6 +279,20 @@ impl PublicClient {
         self.rest_budget.state.lock().await.capacity = limit.saturating_mul(4).div_euclid(5);
         Ok(())
     }
+    /// Extend the shared REST and connection cooldown, for example after restoring durable state.
+    /// Never clears or shortens an existing cooldown. Duration::MAX latches an indefinite halt.
+    pub async fn defer_for(&self, delay: Duration) {
+        self.rest_budget.defer_for(delay).await;
+        self.connection_budget.defer_for(delay).await;
+    }
+    /// Remaining provider cooldown; Duration::MAX means halt. Usage reservations are separate.
+    /// Persistence and coordination with other processes sharing the IP belong to the caller.
+    pub async fn cooldown_remaining(&self) -> Duration {
+        self.rest_budget
+            .cooldown_remaining()
+            .await
+            .max(self.connection_budget.cooldown_remaining().await)
+    }
     /// Exactly one GET, including non-success raw responses. The caller supplies public routes/weights.
     pub async fn get(
         &self,
@@ -255,6 +302,9 @@ impl PublicClient {
     ) -> Result<RawResponse, NetworkError> {
         let deadline = request_deadline(timeout)?;
         let url = public_url(url, false)?;
+        self.rest_budget
+            .defer_for(self.connection_budget.cooldown_remaining().await)
+            .await;
         let reservation = self.rest_budget.reserve(weight, deadline).await?;
         let request_started_at_ms = Utc::now().timestamp_millis();
         let mut response = timeout_at(deadline, self.http.get(url).send())
@@ -266,9 +316,9 @@ impl PublicClient {
         self.rest_budget
             .observe(&headers, status, Some(reservation))
             .await;
-        if status == 418 {
-            self.connection_budget.observe(&headers, status, None).await;
-        }
+        self.connection_budget
+            .defer_for(self.rest_budget.cooldown_remaining().await)
+            .await;
         if response.content_length().is_some_and(|n| n > 4_194_304) {
             return Err(NetworkError::ResponseTooLarge);
         }
@@ -283,13 +333,25 @@ impl PublicClient {
             }
             raw_body.extend_from_slice(&chunk);
         }
+        let received_at_ms = Utc::now().timestamp_millis();
+        // Inspect only protocol rate control after retaining the entire raw body.
+        // Business parsing and archive policy remain with the caller, even on HTTP 200.
+        if serde_json::from_slice::<RateControl>(&raw_body)
+            .ok()
+            .is_some_and(|control| control.ret_code == Some(10006))
+        {
+            let delay = bybit_reset_delay(&headers)
+                .max(retry_after(&headers).unwrap_or_default())
+                .max(Duration::from_secs(60));
+            self.defer_for(delay).await;
+        }
         Ok(RawResponse {
             status,
             raw_body,
             headers,
             request_weight: weight,
             request_started_at_ms,
-            received_at_ms: Utc::now().timestamp_millis(),
+            received_at_ms,
         })
     }
     /// Empty subscriptions use URL-selected Binance streams. Nonempty subscriptions are Bybit topics.
@@ -313,6 +375,9 @@ impl PublicClient {
         }
         let deadline = Instant::now() + options.lifetime;
         let connect_deadline = deadline.min(Instant::now() + Duration::from_secs(5));
+        self.connection_budget
+            .defer_for(self.rest_budget.cooldown_remaining().await)
+            .await;
         let reservation = self.connection_budget.reserve(1, connect_deadline).await?;
         let config = WebSocketConfig::default()
             .max_message_size(Some(options.max_message_bytes))
@@ -330,14 +395,13 @@ impl PublicClient {
                 self.connection_budget
                     .observe(response.headers(), status, Some(reservation))
                     .await;
-                if status == 418 {
-                    self.rest_budget
-                        .observe(response.headers(), status, None)
-                        .await;
-                }
+                self.rest_budget
+                    .defer_for(self.connection_budget.cooldown_remaining().await)
+                    .await;
+                let delay = self.cooldown_remaining().await;
                 return Err(NetworkError::Http {
                     status,
-                    retry_after: retry_after(response.headers()),
+                    retry_after: (!delay.is_zero()).then_some(delay),
                 });
             }
             Err(_) => return Err(NetworkError::Transport),
