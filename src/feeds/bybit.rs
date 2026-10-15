@@ -1,6 +1,6 @@
 //! Bybit v5 public spot and USDT-linear perpetual feeds.
 //!
-//! REST kline callers must request interval=1; that interval is not echoed by Bybit.
+//! REST kline callers supply the requested interval; it is not echoed by Bybit.
 //! Candle volumes are cumulative base quantity and quote turnover, with no taker split.
 //! See https://bybit-exchange.github.io/docs/v5/websocket/public/ticker for patch semantics.
 use std::collections::{BTreeMap, BTreeSet};
@@ -9,8 +9,8 @@ use rust_decimal::Decimal;
 use serde_json::Value;
 
 use super::{
-    Funding, Instrument, InstrumentMetadata, Market, MarketEvent, MinuteCandle, OpenInterest,
-    ParseError, Side, Trade, Venue,
+    CandleInterval, Funding, HistoricalCandle, Instrument, InstrumentMetadata, Market, MarketEvent,
+    MinuteCandle, OpenInterest, ParseError, Side, Trade, Venue,
 };
 use crate::decimal::ExactDecimal;
 
@@ -323,6 +323,32 @@ pub fn parse_rest_klines(
     instrument: &Instrument,
     observed_at_ms: i64,
 ) -> Result<Vec<MinuteCandle>, ParseError> {
+    parse_rest_values(raw, instrument, CandleInterval::M1, observed_at_ms)
+}
+
+/// Parse REST klines requested with `interval.bybit_name()`. Bybit does not echo
+/// the interval or a close time, so the caller must supply the requested interval.
+/// Results are ascending, retain forming rows, and never infer taker buy volume.
+pub fn parse_rest_candles(
+    raw: &[u8],
+    instrument: &Instrument,
+    interval: CandleInterval,
+    observed_at_ms: i64,
+) -> Result<Vec<HistoricalCandle>, ParseError> {
+    Ok(
+        parse_rest_values(raw, instrument, interval, observed_at_ms)?
+            .into_iter()
+            .map(|candle| HistoricalCandle::from_values(candle, interval))
+            .collect(),
+    )
+}
+
+fn parse_rest_values(
+    raw: &[u8],
+    instrument: &Instrument,
+    interval: CandleInterval,
+    observed_at_ms: i64,
+) -> Result<Vec<MinuteCandle>, ParseError> {
     validate_instrument(instrument)?;
     if observed_at_ms < 0 {
         return Err(ParseError::InvalidField("observed_at_ms"));
@@ -339,7 +365,7 @@ pub fn parse_rest_klines(
             .ok_or(ParseError::InvalidField("kline row"))?;
         let at = |n| values.get(n).ok_or(ParseError::InvalidField("kline row"));
         let start = timestamp(at(0)?, "startTime")?;
-        let end = minute_end(start)?;
+        let end = interval.end_ms(start)?;
         if start > observed_at_ms || !starts.insert(start) {
             return Err(ParseError::InvalidField("startTime"));
         }

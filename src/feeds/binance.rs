@@ -2,8 +2,8 @@
 //! All-market feeds intentionally omit COIN-M, dated and non-USDT contracts.
 //! Liquidations are exchange snapshots, not a complete execution ledger.
 use super::{
-    Funding, Instrument, InstrumentMetadata, Liquidation, Market, MarketEvent, MinuteCandle,
-    OpenInterest, ParseError, Side, Venue,
+    CandleInterval, Funding, HistoricalCandle, Instrument, InstrumentMetadata, Liquidation, Market,
+    MarketEvent, MinuteCandle, OpenInterest, ParseError, Side, Venue,
 };
 use crate::decimal::ExactDecimal;
 use rust_decimal::Decimal;
@@ -79,6 +79,32 @@ pub fn parse_rest_klines(
     instrument: &Instrument,
     observed_at_ms: i64,
 ) -> Result<Vec<MinuteCandle>, ParseError> {
+    parse_rest_values(raw, instrument, CandleInterval::M1, observed_at_ms)
+}
+
+/// Parse REST klines requested with `interval.binance_name()` and the default UTC
+/// timezone. Only millisecond responses are accepted. Rows are strictly ascending;
+/// the current interval remains provisional until its exclusive end.
+pub fn parse_rest_candles(
+    raw: &[u8],
+    instrument: &Instrument,
+    interval: CandleInterval,
+    observed_at_ms: i64,
+) -> Result<Vec<HistoricalCandle>, ParseError> {
+    Ok(
+        parse_rest_values(raw, instrument, interval, observed_at_ms)?
+            .into_iter()
+            .map(|candle| HistoricalCandle::from_values(candle, interval))
+            .collect(),
+    )
+}
+
+fn parse_rest_values(
+    raw: &[u8],
+    instrument: &Instrument,
+    interval: CandleInterval,
+    observed_at_ms: i64,
+) -> Result<Vec<MinuteCandle>, ParseError> {
     validate_instrument(instrument)?;
     valid_time(observed_at_ms, "observed_at_ms")?;
     let root = json(raw)?;
@@ -96,7 +122,9 @@ pub fn parse_rest_klines(
         let get = |i| r.get(i).ok_or(ParseError::InvalidField("kline row"));
         let open = time_value(get(0)?, "open time")?;
         let close = time_value(get(6)?, "close time")?;
-        validate_minute(open, close)?;
+        if interval.end_ms(open)?.checked_sub(1) != Some(close) {
+            return Err(ParseError::InvalidField("candle time bounds"));
+        }
         if previous.is_some_and(|p| open <= p) || open > observed_at_ms {
             return Err(ParseError::InvalidField("kline time order"));
         }
