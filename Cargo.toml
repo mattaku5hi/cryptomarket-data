@@ -4,8 +4,17 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
 publish = false
+license = "MIT"
+
+[features]
+default = []
+network = ["dep:reqwest", "dep:tokio", "dep:futures-util", "dep:tokio-tungstenite"]
 
 [dependencies]
+reqwest = { version = "=0.12.28", default-features = false, features = ["rustls-tls"], optional = true }
+tokio = { version = "1", features = ["rt", "net", "time", "sync"], optional = true }
+futures-util = { version = "0.3", features = ["sink"], optional = true }
+tokio-tungstenite = { version = "0.29", features = ["connect", "handshake", "rustls-tls-webpki-roots"], optional = true }
 chrono = { version = "0.4", features = ["serde"] }
 rust_decimal = { version = "1", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
@@ -31,3 +40,7 @@ unimplemented = "deny"
 indexing_slicing = "warn"
 as_conversions = "warn"
 integer_division = "warn"
+
+[[example]]
+name = "candles"
+required-features = ["network"]

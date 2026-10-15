@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, '1.85.0']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+          rustup toolchain install '${{ matrix.toolchain }}' --profile minimal
+      - name: Install bounded artifact cleanup
+        run: cargo +stable install cargo-sweep --version 0.8.0 --locked
+      - name: Check formatting
+        if: matrix.toolchain == 'stable'
+        run: cargo +stable fmt --all -- --check
+      - name: Check core
+        run: tools/cargo_budget.sh '+${{ matrix.toolchain }}' check --all-targets --locked
+      - name: Check optional network and examples
+        run: tools/cargo_budget.sh '+${{ matrix.toolchain }}' check --all-features --all-targets --locked
+      - name: Clippy
+        if: matrix.toolchain == 'stable'
+        run: tools/cargo_budget.sh +stable clippy --all-features --all-targets --locked -- -D warnings

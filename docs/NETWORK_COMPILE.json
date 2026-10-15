@@ -1,0 +1,32 @@
+{
+  "format": "market-data-network-compiler-scope-v1",
+  "recorded_at": "2026-10-15T13:09:01.522952+00:00",
+  "checks": {
+    "stable_all_features_all_targets": "passed",
+    "strict_clippy_all_features_all_targets": "passed",
+    "rust1_85_all_features_all_targets": "passed",
+    "formatting": "passed"
+  },
+  "source_sha256": {
+    "Cargo.toml": "ae86d14a845d36191bd2a9e258c1a028da2cebd21d1434ef165ed0968874911f",
+    "Cargo.lock": "75192fe09da9c45a52925ef1f816662cd6d1f7339b131f9cc07e22e8ddf28148",
+    "src/binance/mod.rs": "ac0ac31c929c798b3330887bf96cee69fcae6a15302f40264f798c3a11db6b26",
+    "src/binance/network.rs": "6976c5b0916b24677d962eb3e99a7019c99852f623e4cc249e4245277b9d3e28",
+    "src/candles.rs": "eae6a2cde13a03f615a6f50673d221197d1d2a67c1241d4f1fb0bc681b66b69a",
+    "src/decimal.rs": "7caf1dde6862d8a92b96ef3b47b70ddaeac316f212f8ceb936d3ae37e5bbdaf0",
+    "src/json.rs": "3e97c6d0bb10b93e2fc852ce516d1133ddf14ef35d50c48ae83fb7282f16876f",
+    "src/lib.rs": "9fc521461b25128709f4e75bffa1851e36b325d5e68278962b676470176bf44f",
+    "src/types.rs": "a2cd9765797be48baebcc3e03908b29971476a2d9123a08ea08b06c366b0b8c9",
+    "examples/candles.rs": "da4d9898814b30829c12fe1856b606ed906d81b311444daa1527a6b351f59ac9"
+  },
+  "artifact_cap": "8GB with pre/post cargo-sweep",
+  "behavioral_controls_or_tests_added_or_run": false,
+  "public_binance_request_made": false,
+  "example_run": false,
+  "native_consumer_core_compiles": true,
+  "native_raw_first_transport_migrated": false,
+  "ci_prepared_not_executed": true,
+  "checkout_v7_reviewed_git_ref": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+  "license_owner_approved": "MIT",
+  "public_remote_configured": false
+}

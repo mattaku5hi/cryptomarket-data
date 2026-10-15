@@ -500,3 +500,6 @@ fn as_object<'a>(
 ) -> Result<&'a Map<String, Value>, ParseError> {
     value.as_object().ok_or(ParseError::WrongShape(message))
 }
+
+#[cfg(feature = "network")]
+pub mod network;
