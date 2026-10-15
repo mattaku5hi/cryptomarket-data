@@ -404,3 +404,26 @@ fn linear_metadata_requires_usdt_settlement_without_imposing_it_on_spot() {
         1
     );
 }
+
+#[test]
+fn live_rollover_batch_accepts_final_timestamp_after_interval_end() {
+    let frame = br#"{"topic":"kline.1.ETHUSDT","data":[{"start":1792086900000,"end":1792086959999,"interval":"1","open":"2444.3","close":"2444.73","high":"2444.74","low":"2444.3","volume":"31.77","turnover":"77661.5489","confirm":true,"timestamp":1792086960580},{"start":1792086960000,"end":1792087019999,"interval":"1","open":"2444.73","close":"2444.73","high":"2444.73","low":"2444.73","volume":"0","turnover":"0","confirm":false,"timestamp":1792086960580}],"ts":1792086960580,"type":"snapshot"}"#;
+    let events = bybit::parse_websocket(
+        frame,
+        Market::UsdtPerpetual,
+        &mut TickerCache::new(1).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(events.len(), 2);
+    let MarketEvent::Candle(closed) = &events[0] else {
+        unreachable!()
+    };
+    let MarketEvent::Candle(forming) = &events[1] else {
+        unreachable!()
+    };
+    assert!(closed.is_final);
+    assert!(!forming.is_final);
+    assert_eq!(closed.updated_at_ms, 1792086960580);
+    assert_eq!(closed.base_volume, Decimal::new(3177, 2));
+    assert_eq!(forming.base_volume, Decimal::ZERO);
+}

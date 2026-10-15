@@ -408,6 +408,7 @@ fn ws_klines(value: &Value, market: Market) -> Result<Vec<MinuteCandle>, ParseEr
         }
         let start = timestamp(field(row, "start")?, "start")?;
         let end = minute_end(start)?;
+        // Live rollover batches may stamp the closed row at publication after its end.
         let last_trade = timestamp(field(row, "timestamp")?, "timestamp")?;
         let is_final = field(row, "confirm")?
             .as_bool()
@@ -415,7 +416,6 @@ fn ws_klines(value: &Value, market: Market) -> Result<Vec<MinuteCandle>, ParseEr
         if timestamp(field(row, "end")?, "end")? != end - 1
             || time < start
             || last_trade < start
-            || last_trade >= end
             || last_trade > time
             || (is_final && time < end)
         {
