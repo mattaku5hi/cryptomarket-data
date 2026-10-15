@@ -1,6 +1,7 @@
 # Extraction plan
 
-Owner2026-10-15: market-data, standalone repository at ~/Projects/work_selfstudy/market-data.
+Owner2026-10-15: crate market-data, standalone repository at
+~/Projects/work_selfstudy/cryptomarket-data (owner-created final path).
 
 1. Move bounded Binance parsing/decimal/duplicate-key JSON, explicit symbol/product.
 2. Move causal candle arithmetic; arbitrary positive fixed UTC cadence; explicit
@@ -13,3 +14,9 @@ Owner2026-10-15: market-data, standalone repository at ~/Projects/work_selfstudy
 
 No pm-record paths, strategy, Polymarket features, credentials or raw private
 archives move to this repository. No active collector binary change is implied.
+
+Publication: public GitHub repository and compiler CI passed at b530706.
+MIT selected; public transport, bounded example and CI implemented.
+Compiler-only checks passed; behavioral acceptance remains pending.
+EXTRACTION_PROVENANCE.json describes the earlier core extraction snapshot;
+NETWORK_COMPILE.json records the subsequent transport/compiler scope.

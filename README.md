@@ -10,8 +10,14 @@ reads and aggregate-trade/depth streams with proactive shared process budgets.
 [Transport and finite example](docs/PUBLIC_TRANSPORT.md).
 
 No additional exchange or provider REST kline implementation is claimed.
-Behavioral acceptance, native raw-first transport migration and public remote
-remain pending. Compiler/Clippy/MSRV checks are not behavioral acceptance.
+Behavioral acceptance and native raw-first transport migration remain pending. Compiler/Clippy/MSRV checks are not behavioral acceptance.
 
 Build through `tools/cargo_budget.sh`; target cap 8 GB with cargo-sweep.
-Licensed under [MIT](LICENSE), selected by the owner. Public remote is pending.
+Licensed under [MIT](LICENSE), selected by the owner.
+
+Repository: https://github.com/mattaku5hi/cryptomarket-data
+
+The GitHub repository is named `cryptomarket-data`; the Rust crate is
+`market-data`. The owner workspace is `~/Projects/work_selfstudy/cryptomarket-data`.
+Consumers pin a reviewed Git revision. The original sibling `market-data` draft
+is retained for rollback and is no longer the development authority.
