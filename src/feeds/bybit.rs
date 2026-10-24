@@ -17,6 +17,31 @@ use crate::decimal::ExactDecimal;
 const MAX_BYTES: usize = 8 * 1024 * 1024;
 const MAX_ITEMS: usize = 10_000;
 
+/// Bybit `retCode` for too many visits; transports defer further requests on it.
+pub const RATE_LIMIT_CODE: i64 = 10006;
+const MAX_RET_MESSAGE_CHARS: usize = 200;
+
+/// Non-zero Bybit REST `retCode` and `retMsg` (at most 200 characters) found in a raw
+/// body; `None` for retCode 0, or when the body is not a JSON object with an integer retCode.
+pub fn ret_code(raw: &[u8]) -> Option<(i64, String)> {
+    let value: Value = serde_json::from_slice(raw).ok()?;
+    let code = value.get("retCode")?.as_i64().filter(|code| *code != 0)?;
+    let message = value
+        .get("retMsg")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .chars()
+        .take(MAX_RET_MESSAGE_CHARS)
+        .collect();
+    Some((code, message))
+}
+
+/// Throttling or busy codes worth retrying later rather than treating as a symbol error:
+/// 10006 too many visits, 10016 server error, 10018 IP rate limit exceeded.
+pub fn is_transient_code(code: i64) -> bool {
+    matches!(code, RATE_LIMIT_CODE | 10016 | 10018)
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct InstrumentPage {
     pub instruments: Vec<InstrumentMetadata>,

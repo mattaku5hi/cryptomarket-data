@@ -7,3 +7,6 @@ pub mod json;
 pub mod types;
 
 pub mod feeds;
+
+#[cfg(feature = "vision")]
+pub mod vision;

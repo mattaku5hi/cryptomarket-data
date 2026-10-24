@@ -427,3 +427,20 @@ fn live_rollover_batch_accepts_final_timestamp_after_interval_end() {
     assert_eq!(closed.base_volume, Decimal::new(3177, 2));
     assert_eq!(forming.base_volume, Decimal::ZERO);
 }
+
+#[test]
+fn retcode_classification_separates_throttling_from_symbol_errors() {
+    let body = |code: i64| format!(r#"{{"retCode":{code},"retMsg":"x","result":{{}}}}"#);
+    assert_eq!(bybit::ret_code(body(0).as_bytes()), None);
+    assert_eq!(bybit::ret_code(b"[]"), None);
+    assert_eq!(bybit::ret_code(b"not json"), None);
+    for code in [10006, 10016, 10018] {
+        let (found, _) = bybit::ret_code(body(code).as_bytes()).unwrap();
+        assert!(bybit::is_transient_code(found));
+    }
+    let (found, message) = bybit::ret_code(body(10001).as_bytes()).unwrap();
+    assert!(!bybit::is_transient_code(found));
+    assert_eq!(message, "x");
+    let long = format!(r#"{{"retCode":10001,"retMsg":"{}"}}"#, "y".repeat(300));
+    assert_eq!(bybit::ret_code(long.as_bytes()).unwrap().1.len(), 200);
+}

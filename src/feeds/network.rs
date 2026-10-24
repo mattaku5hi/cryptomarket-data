@@ -338,7 +338,7 @@ impl PublicClient {
         // Business parsing and archive policy remain with the caller, even on HTTP 200.
         if serde_json::from_slice::<RateControl>(&raw_body)
             .ok()
-            .is_some_and(|control| control.ret_code == Some(10006))
+            .is_some_and(|control| control.ret_code == Some(super::bybit::RATE_LIMIT_CODE))
         {
             let delay = bybit_reset_delay(&headers)
                 .max(retry_after(&headers).unwrap_or_default())
