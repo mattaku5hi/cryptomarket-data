@@ -14,6 +14,11 @@ trades, open interest, funding, liquidation snapshots and instrument metadata.
 Its optional transport returns bounded raw responses before parsing and shares
 request budgets across clients. [Feed contracts](docs/SCANNER_FEEDS.md).
 
+Feature `vision` adds `market_data::vision`: a cached, sha256-verified reader for
+the public data.binance.vision archive (USD-M klines, metrics, funding, premium
+index; spot klines). The cache mirrors archive paths, keeps `.CHECKSUM` files and
+`.404` negative entries, and works fully offline from an existing cache.
+
 The workspace also includes extracted `pm-schema` and `pm-record` crates for
 checksummed event recording. Existing Binance/trade-candle APIs remain available.
 Scanner orchestration, strategies and notification logic belong to consumers.

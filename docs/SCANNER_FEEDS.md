@@ -17,7 +17,9 @@ market liquidation total. [Binance streams](https://developers.binance.com/docs/
 and snapshot/delta tickers. Keep a bounded `TickerCache` for each connection,
 reset it on reconnect, and preserve omitted delta fields. Funding intervals
 are normalized to minutes. Historical REST candles have no taker-buy volume;
-unknown buy volume stays `None`. [Bybit tickers](https://bybit-exchange.github.io/docs/v5/websocket/public/ticker),
+unknown buy volume stays `None`. `bybit::ret_code` extracts a non-zero REST
+`retCode`/`retMsg` from a raw body; `is_transient_code` marks 10006, 10016 and
+10018 as throttling or busy rather than symbol errors. [Bybit tickers](https://bybit-exchange.github.io/docs/v5/websocket/public/ticker),
 [REST candles](https://bybit-exchange.github.io/docs/v5/market/kline).
 
 With the `network` feature, `feeds::network::PublicClient` exposes bounded raw
