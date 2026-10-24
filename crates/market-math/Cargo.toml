@@ -1,0 +1,23 @@
+[package]
+name = "market-math"
+version = "0.1.0"
+publish = false
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+description = "Zero-dependency numeric helpers: summary statistics, quantiles, rolling windows, indicators, intervals and bootstrap."
+
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+indexing_slicing = "warn"
+as_conversions = "warn"
+integer_division = "warn"

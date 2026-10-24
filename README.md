@@ -20,7 +20,10 @@ index; spot klines). The cache mirrors archive paths, keeps `.CHECKSUM` files an
 `.404` negative entries, and works fully offline from an existing cache.
 
 The workspace also includes extracted `pm-schema` and `pm-record` crates for
-checksummed event recording. Existing Binance/trade-candle APIs remain available.
+checksummed event recording, and the zero-dependency `market-math` crate
+(summary statistics, quantiles, trailing windows, EMA/RSI/MACD, Wilson and
+bootstrap intervals; each variant documents its exact NaN and index rules).
+Existing Binance/trade-candle APIs remain available.
 Scanner orchestration, strategies and notification logic belong to consumers.
 
 Build through `tools/cargo_budget.sh`; target cap 8 GB with cargo-sweep.

@@ -49,5 +49,5 @@ name = "candles"
 required-features = ["network"]
 
 [workspace]
-members = ["crates/pm-record", "crates/pm-schema"]
+members = ["crates/market-math", "crates/pm-record", "crates/pm-schema"]
 resolver = "3"

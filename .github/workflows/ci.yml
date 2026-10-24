@@ -36,6 +36,6 @@ jobs:
         run: tools/cargo_budget.sh '+${{ matrix.toolchain }}' check --all-features --all-targets --locked
       - name: Clippy
         if: matrix.toolchain == 'stable'
-        run: tools/cargo_budget.sh +stable clippy --all-features --all-targets --locked -- -D warnings
+        run: tools/cargo_budget.sh +stable clippy --workspace --all-features --all-targets --locked -- -D warnings
       - name: Test
         run: tools/cargo_budget.sh '+${{ matrix.toolchain }}' test --workspace --all-features --locked
